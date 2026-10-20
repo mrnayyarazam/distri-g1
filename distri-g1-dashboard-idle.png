@@ -1,0 +1,147 @@
+# DISTRI G1 | AI-Controlled Distribution System
+
+An AI-based food distribution prototype designed to help prevent duplicate food distribution by verifying recipients using face recognition.
+
+<p align="center">
+  <strong>Intelligent verification for automated food distribution</strong><br />
+  <a href="https://github.com/mrnayyarazam/distri-g1">View the GitHub Repository</a>
+</p>
+
+## Dashboard Preview
+
+### Verification in action
+
+![DISTRI G1 dashboard showing a verification result](docs/images/distri-g1-dashboard-verified.png)
+
+### Ready for verification
+
+![DISTRI G1 dashboard in its initial state](docs/images/distri-g1-dashboard-idle.png)
+
+## Project Overview
+
+DISTRI G1 combines a web dashboard with an AI backend to check whether a person has already received a food packet during the current demo session. It is intended as a prototype for controlled and accountable distribution.
+
+## Key Features
+
+- Face detection and face-embedding comparison.
+- Duplicate-attempt detection within the running backend session.
+- Image upload and webcam-oriented verification interface.
+- Image-quality checks, including blur, face size, and face-cropping checks.
+- Dashboard counters for remaining stock, successful distributions, duplicate attempts, and errors.
+- In-memory matching for the prototype rather than a permanent recipient database.
+
+## Technology Stack
+
+| Component | Technology |
+|---|---|
+| Frontend | Next.js, React, JavaScript, Tailwind CSS |
+| Backend API | Python, FastAPI, Uvicorn |
+| Face analysis | InsightFace (`buffalo_l`) |
+| Image processing | OpenCV, NumPy |
+| Similarity matching | Normalized face embeddings and cosine similarity |
+
+## How Verification Works
+
+1. A user captures or uploads an image.
+2. The FastAPI backend decodes the image and checks for a detectable face.
+3. Image quality is checked before verification continues.
+4. InsightFace generates a face embedding for the selected face.
+5. The embedding is compared with embeddings held in memory for the current session.
+6. The API returns a result such as `NEW`, `DUPLICATE`, `NO_FACE`, or `BAD_QUALITY`.
+7. The dashboard updates its status and operational counters.
+
+## Run Locally
+
+### Prerequisites
+
+- Node.js and npm
+- Python
+- Git
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/mrnayyarazam/distri-g1.git
+cd distri-g1
+```
+
+### 2. Install frontend dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up the Python environment
+
+From the project root, create and activate a virtual environment.
+
+**Windows PowerShell**
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Install the backend packages used by the project:
+
+```bash
+pip install fastapi uvicorn python-multipart insightface onnxruntime opencv-python numpy
+```
+
+> InsightFace may require compatible Python and package versions. If installation fails, use a Python version supported by the installed InsightFace and ONNX Runtime releases.
+
+### 4. Start the backend
+
+Run this from the project root in a terminal:
+
+```bash
+python -m uvicorn backend.main:app --reload
+```
+
+Backend endpoints:
+
+- Backend status: http://127.0.0.1:8000/
+- AI status: http://127.0.0.1:8000/ai-status
+- Interactive API documentation: http://127.0.0.1:8000/docs
+
+### 5. Start the frontend
+
+Open a second terminal in the project root:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:3000 in your browser.
+
+## API Endpoints
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/` | Backend status |
+| GET | `/ai-status` | AI backend status |
+| POST | `/detect-face` | Detect faces in an uploaded image |
+| POST | `/verify-face` | Check image quality and determine whether a face is new or a duplicate |
+
+The POST endpoints accept an image as multipart form data under the field name `file`.
+
+## Demo Limitations and Privacy
+
+- Face embeddings are kept in memory and are cleared when the backend process restarts.
+- Dashboard counters are session/UI state and may reset when the page is refreshed.
+- This is an educational demonstration, not a production-ready identity or food-distribution system.
+- Face recognition can produce false matches or misses, especially with poor lighting, pose changes, occlusion, or low-quality images.
+- Obtain clear consent before capturing or processing anyone's face. Do not use this prototype to make consequential distribution decisions without appropriate testing, safeguards, and human oversight.
+
+## Achievement
+
+**2nd Place and Special Commendation Cash Award of ₹750** at **INTELLI-GENZ 2K26**, a one-day national-level technical symposium.
+
+## Repository
+
+- **GitHub:** https://github.com/mrnayyarazam/distri-g1
+- **Clone URL:** https://github.com/mrnayyarazam/distri-g1.git
+
+---
+
+Developed as the DISTRI G1 AI-controlled food distribution prototype.
